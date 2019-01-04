@@ -1,0 +1,6 @@
+#endpoint: ''
+endpoint: https://eu1.prisma.sh/jackson-ricardo-schroeder-31543c/prisma/dev
+datamodel: datamodel.prisma
+generate:
+  - generator: javascript-client
+    output: ../src/generated/prisma-client
