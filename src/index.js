@@ -1,59 +1,50 @@
-const { GraphQLServer } = require('graphql-yoga');
+const { GraphQLServer } = require('graphql-yoga')
+const { prisma } = require('./generated/prisma-client')
 
 const typeDefs = './src/schema.graphql';
-
-let links = [
-  {
-    id: 'link-0',
-    url: 'www.howtographql.com',
-    description: 'Fullstack tutorial for GraphQL'
-  }
-];
 
 const resolvers = {
   Query: {
     info: () => `This is the API of a hackernews Clone`,
-    feed: () => links,
+    feed: (root, args, context) => {
+      console.log('prisma: ', context.prisma.links())
+      return context.prisma.links()
+    },
     link: (root, { id }) => links.find(link => link.id === id)
   },
   Mutation: {
-    createLink: (root, { url, description }) => {
-      const id = `link-${links.length + 1}`;
-      const link = {
-        id,
+    createLink: (
+      root,
+      { url, description },
+      context,
+    ) => {
+      return context.prisma.createLink({
+        url,
         description,
-        url
-      };
-
-      links = [...links, link];
-      return link;
+      })
     },
-    updateLink: (root, { id, url, description }) => {
-      const foundLink = links.find(link => link.id === id);
-      const link = {
-        id,
-        description,
-        url
-      };
-
-      links = [...links.filter(link => link.id !== id), link];
-
-      return foundLink ? link : null;
+    updateLink: (
+      root, 
+      { id, url, description }, 
+      context,
+    ) => {
+      return context.prisma
+        .updateLink({ 
+          data: { url, description }, 
+          where: { id },
+        })
     },
-    deleteLink: (root, { id }) => {
-      const foundLink = links.find(link => link.id === id)
-      links = [
-        ...links.filter(link => link.id !== id),
-      ]
-
-      return foundLink
+    deleteLink: (root, { id }, context) => {
+      return context.prisma
+        .deleteLink({ id })
     },
   }
 };
 
 const server = new GraphQLServer({
   typeDefs,
-  resolvers
+  resolvers,
+  context: { prisma },
 });
 
 server.start(() => console.log('Server is running on http://localhost:4000'));
