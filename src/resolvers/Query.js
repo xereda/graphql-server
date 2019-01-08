@@ -1,4 +1,8 @@
-const feed = async (root, { filter, skip, first }, { prisma }) => {
+const feed = async (
+  root, 
+  { filter, skip, first, orderBy }, 
+  { prisma },
+) => {
   const where = filter
     ? {
         OR: [
@@ -8,7 +12,7 @@ const feed = async (root, { filter, skip, first }, { prisma }) => {
       }
     : {};
   
-  return await prisma.links({ where, skip, first })
+  return await prisma.links({ where, skip, first, orderBy })
 }
 const users = (root, args, { prisma }) => prisma.users()
 const user = (root, { id }, { prisma }) => prisma.user({ id })

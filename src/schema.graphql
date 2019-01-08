@@ -1,5 +1,10 @@
 type Query {
-  feed(filter: String, skip: Int, first: Int): [Link!]!
+  feed(
+    filter: String, 
+    skip: Int, 
+    first: Int,
+    orderBy: LinkOrderByInput,
+  ): [Link!]!
   link(id: ID!): Link
   user(id: ID!): User
   users: [User!]!
