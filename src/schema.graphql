@@ -4,7 +4,7 @@ type Query {
     skip: Int, 
     first: Int,
     orderBy: LinkOrderByInput,
-  ): [Link!]!
+  ): Feed!
   link(id: ID!): Link
   user(id: ID!): User
   users: [User!]!
@@ -55,4 +55,9 @@ enum LinkOrderByInput {
   url_DESC
   createdAt_ASC
   createdAt_DESC
+}
+
+type Feed {
+  links: [Link!]!
+  count: Int!
 }

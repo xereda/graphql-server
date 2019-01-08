@@ -12,7 +12,16 @@ const feed = async (
       }
     : {};
   
-  return await prisma.links({ where, skip, first, orderBy })
+  const links = await prisma.links({ where, skip, first, orderBy })
+
+  const count = await prisma.linksConnection({ where })
+    .aggregate()
+    .count()
+
+  return {
+    links,
+    count,
+  }
 }
 const users = (root, args, { prisma }) => prisma.users()
 const user = (root, { id }, { prisma }) => prisma.user({ id })
